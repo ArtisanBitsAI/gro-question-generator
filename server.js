@@ -23,7 +23,7 @@ app.post('/generate-questions', async (req, res) => {
  return res.status(400).json({ error: 'Business idea and interview setting are required' });
  }
 
- // Generate questions using Claude AI
+ // Generate questions using Claude AI - currently using Sonnet 4.5
  const prompt = `You are an expert customer discovery coach who has helped validate hundreds of startups. Analyze this business idea and generate highly specific, insightful interview questions.
 
 Business idea: ${businessIdea}
