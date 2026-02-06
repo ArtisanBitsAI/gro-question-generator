@@ -68,7 +68,7 @@ Return a JSON object with this exact structure:
 Important: Make questions specifically about the actual problem space described in their business idea. Reference specific aspects of their idea in the questions.`;
 
     const response = await axios.post("https://api.anthropic.com/v1/messages", {
-      model: "claude-3-5-sonnet-20241022",
+      model: "claude-sonnet-4-5-20250929",
       max_tokens: 2000,
       messages: [
         { role: "user", content: prompt }
@@ -125,7 +125,7 @@ Create a conversation starter that:
 Return ONLY the conversation starter in quotes, with [bracketed] placeholders for personalization.`;
 
     const response = await axios.post("https://api.anthropic.com/v1/messages", {
-      model: "claude-3-5-sonnet-20241022",
+      model: "claude-sonnet-4-5-20250929",
       max_tokens: 300,
       messages: [
         { role: "user", content: prompt }
