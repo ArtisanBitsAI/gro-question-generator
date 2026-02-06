@@ -315,20 +315,64 @@ app.post('/subscribe', async (req, res) => {
  return res.status(400).json({ error: 'Email is required' });
  }
 
- // Send notification email to you via SendGrid
+ // Send notification email to admin via SendGrid
  const notificationMsg = {
  to: 'matt@askgro.ai',
  from: 'notifications@askgro.ai',
  subject: 'New Gro Question Generator Signup',
- html: `
- New User Registered via Gro Question Generator 
- Email: ${email} 
- Business Idea: ${businessIdea || 'Not provided'} 
- Timestamp: ${new Date().toISOString()} 
- 
- 
- This notification was sent automatically from the Gro Question Generator lead magnet. 
- `
+ html: `<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background-color:#f3f4f6; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+ <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f3f4f6; padding:32px 16px;">
+  <tr>
+   <td align="center">
+    <table cellpadding="0" cellspacing="0" border="0" width="520" style="max-width:520px; background-color:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+     <tr>
+      <td style="background:linear-gradient(135deg,#0d9488,#059669); padding:20px 28px;">
+       <h1 style="margin:0; font-size:18px; font-weight:700; color:#ffffff;">New Question Generator Signup</h1>
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:24px 28px;">
+       <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+         <td style="padding:8px 0; border-bottom:1px solid #f3f4f6;">
+          <p style="margin:0 0 2px 0; font-size:11px; text-transform:uppercase; font-weight:600; color:#9ca3af; letter-spacing:0.5px;">Email</p>
+          <p style="margin:0; font-size:15px; color:#111827;"><a href="mailto:${email}" style="color:#0d9488; text-decoration:none;">${email}</a></p>
+         </td>
+        </tr>
+        <tr>
+         <td style="padding:12px 0; border-bottom:1px solid #f3f4f6;">
+          <p style="margin:0 0 2px 0; font-size:11px; text-transform:uppercase; font-weight:600; color:#9ca3af; letter-spacing:0.5px;">Business Idea</p>
+          <p style="margin:0; font-size:15px; color:#111827; line-height:1.5;">${businessIdea || 'Not provided'}</p>
+         </td>
+        </tr>
+        <tr>
+         <td style="padding:12px 0; border-bottom:1px solid #f3f4f6;">
+          <p style="margin:0 0 2px 0; font-size:11px; text-transform:uppercase; font-weight:600; color:#9ca3af; letter-spacing:0.5px;">Interview Setting</p>
+          <p style="margin:0; font-size:15px; color:#111827;">${interviewSettingLabel || interviewSetting || 'Not specified'}</p>
+         </td>
+        </tr>
+        <tr>
+         <td style="padding:12px 0;">
+          <p style="margin:0 0 2px 0; font-size:11px; text-transform:uppercase; font-weight:600; color:#9ca3af; letter-spacing:0.5px;">Timestamp</p>
+          <p style="margin:0; font-size:15px; color:#111827;">${new Date().toISOString()}</p>
+         </td>
+        </tr>
+       </table>
+      </td>
+     </tr>
+     <tr>
+      <td style="padding:16px 28px; border-top:1px solid #e5e7eb; text-align:center;">
+       <p style="margin:0; font-size:11px; color:#9ca3af;">Sent automatically from the Gro Question Generator lead magnet.</p>
+      </td>
+     </tr>
+    </table>
+   </td>
+  </tr>
+ </table>
+</body>
+</html>`
  };
 
  // Send the user their personalized questions email
