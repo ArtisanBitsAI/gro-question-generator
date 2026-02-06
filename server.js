@@ -332,10 +332,31 @@ app.post('/subscribe', async (req, res) => {
  };
 
  // Send the user their personalized questions email
+ const userEmailText = [
+  'Hey there! Your Customer Discovery Interview Guide is ready.',
+  '',
+  'You just generated a personalized set of interview questions with Gro, and I want to make sure you can actually use them.',
+  '',
+  `Business Idea: ${businessIdea || 'Not provided'}`,
+  `Interview Setting: ${interviewSettingLabel || interviewSetting || 'Not specified'}`,
+  conversationStarter ? '' : '',
+  conversationStarter ? `Conversation Starter: ${conversationStarter}` : '',
+  '',
+  'Tip: Keep the conversation natural, ask lots of “why?” and listen more than you talk.',
+  '',
+  'Want to practice these questions live? Gro can role-play as your target customer.',
+  'Practice with Gro: https://askgro.ai',
+  '',
+  'Talk soon,',
+  'Matt & Gro 🌱',
+  'Founder, AskGro'
+ ].filter(Boolean).join('\n');
+
  const userEmailMsg = {
   to: email,
   from: 'notifications@askgro.ai',
-  subject: `Your Customer Discovery Questions for: ${(businessIdea || '').substring(0, 60)}`,
+  subject: '🧭 Your Customer Discovery Interview Guide is ready! - Growth Tools by Gro 🌱',
+  text: userEmailText,
   html: buildQuestionsEmailHtml({
    email,
    businessIdea: businessIdea || 'Not provided',
