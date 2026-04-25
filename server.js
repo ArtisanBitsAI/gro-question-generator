@@ -6,6 +6,8 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const ANTHROPIC_MODEL = process.env.ANTHROPIC_MODEL || process.env.CLAUDE_MODEL || 'claude-sonnet-4-6';
+const ANTHROPIC_API_KEY = process.env.CLAUDE_API_KEY || process.env.ANTHROPIC_API_KEY;
 
 // Middleware
 app.use(cors());
@@ -13,6 +15,18 @@ app.use(express.json());
 
 // Initialize SendGrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+function logAnthropicError(context, error) {
+ if (error.response) {
+ console.error(`${context} Anthropic error:`, {
+  status: error.response.status,
+  data: error.response.data
+ });
+ return;
+ }
+
+ console.error(`${context} Anthropic request failed:`, error.message);
+}
 
 // Generate AI-powered questions endpoint
 app.post('/generate-questions', async (req, res) => {
@@ -23,7 +37,7 @@ app.post('/generate-questions', async (req, res) => {
  return res.status(400).json({ error: 'Business idea and interview setting are required' });
  }
 
- // Generate questions using Claude AI - currently using Sonnet 4.5
+ // Generate questions using Claude AI
  const prompt = `You are an expert customer discovery coach who has helped validate hundreds of startups. Analyze this business idea and generate highly specific, insightful interview questions.
 
 Business idea: ${businessIdea}
@@ -68,7 +82,7 @@ Return a JSON object with this exact structure:
 Important: Make questions specifically about the actual problem space described in their business idea. Reference specific aspects of their idea in the questions.`;
 
  const response = await axios.post("https://api.anthropic.com/v1/messages", {
- model: "claude-sonnet-4-6",
+ model: ANTHROPIC_MODEL,
  max_tokens: 2000,
  messages: [
  { role: "user", content: prompt }
@@ -76,7 +90,7 @@ Important: Make questions specifically about the actual problem space described 
  }, {
  headers: {
  "Content-Type": "application/json",
- "x-api-key": process.env.CLAUDE_API_KEY,
+ "x-api-key": ANTHROPIC_API_KEY,
  "anthropic-version": "2023-06-01"
  }
  });
@@ -96,6 +110,7 @@ Important: Make questions specifically about the actual problem space described 
 
  } catch (error) {
  console.error('Error generating questions:', error);
+ logAnthropicError('Generate questions', error);
  res.status(500).json({ error: 'Failed to generate questions' });
  }
 });
@@ -125,7 +140,7 @@ Create a conversation starter that:
 Return ONLY the conversation starter in quotes, with [bracketed] placeholders for personalization.`;
 
  const response = await axios.post("https://api.anthropic.com/v1/messages", {
- model: "claude-sonnet-4-6",
+ model: ANTHROPIC_MODEL,
  max_tokens: 300,
  messages: [
  { role: "user", content: prompt }
@@ -133,7 +148,7 @@ Return ONLY the conversation starter in quotes, with [bracketed] placeholders fo
  }, {
  headers: {
  "Content-Type": "application/json",
- "x-api-key": process.env.CLAUDE_API_KEY,
+ "x-api-key": ANTHROPIC_API_KEY,
  "anthropic-version": "2023-06-01"
  }
  });
@@ -143,6 +158,7 @@ Return ONLY the conversation starter in quotes, with [bracketed] placeholders fo
 
  } catch (error) {
  console.error('Error generating starter:', error);
+ logAnthropicError('Generate starter', error);
  res.status(500).json({ error: 'Failed to generate conversation starter' });
  }
 });
@@ -471,5 +487,6 @@ app.listen(PORT, () => {
  console.log('- SENDGRID_API_KEY:', process.env.SENDGRID_API_KEY ? '✓' : '✗');
  console.log('- BEEHIIV_API_KEY:', process.env.BEEHIIV_API_KEY ? '✓' : '✗');
  console.log('- BEEHIIV_PUBLICATION_ID:', process.env.BEEHIIV_PUBLICATION_ID ? '✓' : '✗');
- console.log('- CLAUDE_API_KEY:', process.env.CLAUDE_API_KEY ? '✓' : '✗');
+ console.log('- CLAUDE_API_KEY or ANTHROPIC_API_KEY:', ANTHROPIC_API_KEY ? '✓' : '✗');
+ console.log('- ANTHROPIC_MODEL:', ANTHROPIC_MODEL);
 });
