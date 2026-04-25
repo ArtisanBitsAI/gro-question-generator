@@ -109,7 +109,7 @@ Important: Make questions specifically about the actual problem space described 
  }
 
  } catch (error) {
- console.error('Error generating questions:', error);
+ console.error('Error generating questions:', error.message);
  logAnthropicError('Generate questions', error);
  res.status(500).json({ error: 'Failed to generate questions' });
  }
@@ -157,7 +157,7 @@ Return ONLY the conversation starter in quotes, with [bracketed] placeholders fo
  res.json({ starter });
 
  } catch (error) {
- console.error('Error generating starter:', error);
+ console.error('Error generating starter:', error.message);
  logAnthropicError('Generate starter', error);
  res.status(500).json({ error: 'Failed to generate conversation starter' });
  }
